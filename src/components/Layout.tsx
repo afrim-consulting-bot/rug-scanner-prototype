@@ -5,11 +5,15 @@ export function Layout() {
     <div className="min-h-screen bg-gradient-to-b from-[#0b1020] via-[#0b1020] to-[#070a14]">
       <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0b1020]/70 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-white/10 ring-1 ring-white/10" />
+          <Link to="/" className="flex items-center gap-3">
+            <img
+              src="/brand/rugscanner-logo.png"
+              alt="Rug Scanner"
+              className="h-9 w-9 rounded-lg object-cover ring-1 ring-white/10"
+            />
             <div className="leading-tight">
               <div className="text-sm font-semibold tracking-wide text-white">Rug Scanner</div>
-              <div className="text-xs text-slate-300">Solana Risk Report (prototype)</div>
+              <div className="text-xs text-slate-300">Risk Report (prototype)</div>
             </div>
           </Link>
           <nav className="flex items-center gap-3 text-sm">
