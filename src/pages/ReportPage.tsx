@@ -123,7 +123,7 @@ export function ReportPage() {
           {r.checks.map((c) => (
             <details
               key={c.key}
-              className="group rounded-2xl border border-white/10 bg-white/5 p-4"
+              className="group rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-5 shadow-[0_10px_28px_rgba(0,0,0,0.28)]"
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
                 <div className="space-y-1">
