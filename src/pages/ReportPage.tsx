@@ -9,6 +9,7 @@ export function ReportPage() {
   const nav = useNavigate();
   const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
 
   const report = useMemo(() => (id ? findById(id) : undefined), [id]);
 
@@ -33,6 +34,7 @@ export function ReportPage() {
     const updated = enableShare(r.id);
     if (!updated?.shareId) return;
     const url = `${window.location.origin}/r/${updated.shareId}`;
+    setShareUrl(url);
     await navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 1200);
@@ -96,6 +98,16 @@ export function ReportPage() {
                 Re-scan
               </button>
             </div>
+
+            {shareUrl ? (
+              <a
+                href={shareUrl}
+                className="text-sm text-slate-300 underline-offset-4 hover:text-white hover:underline"
+              >
+                Open shared report
+              </a>
+            ) : null}
+
             <button
               onClick={() => setExpanded((v) => !v)}
               className="text-sm text-slate-300 underline-offset-4 hover:text-white hover:underline"
@@ -112,7 +124,6 @@ export function ReportPage() {
             <details
               key={c.key}
               className="group rounded-2xl border border-white/10 bg-white/5 p-4"
-              open
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
                 <div className="space-y-1">

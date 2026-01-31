@@ -75,7 +75,6 @@ export function SharedReportPage() {
             <details
               key={c.key}
               className="group rounded-2xl border border-white/10 bg-white/5 p-4"
-              open
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
                 <div className="space-y-1">
