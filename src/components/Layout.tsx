@@ -5,10 +5,11 @@ export function Layout() {
     <div className="min-h-screen bg-gradient-to-b from-[#0b1020] via-[#0b1020] to-[#070a14]">
       <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0b1020]/70 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3" aria-label="Rug Scanner">
             <img
               src="/brand/rugscanner-logo.png"
-              alt="Rug Scanner"
+              alt=""
+              aria-hidden="true"
               className="h-9 w-9 rounded-lg object-cover ring-1 ring-white/10"
             />
             <div className="leading-tight">
