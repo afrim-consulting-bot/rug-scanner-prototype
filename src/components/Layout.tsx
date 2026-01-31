@@ -3,7 +3,7 @@ import { Link, Outlet } from "react-router-dom";
 export function Layout() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0b1020] via-[#0b1020] to-[#070a14]">
-      <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0b1020]/70 backdrop-blur">
+      <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0b1020]/75 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-3" aria-label="Rug Scanner">
             <img
@@ -33,7 +33,7 @@ export function Layout() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-4 py-8">
+      <main className="mx-auto max-w-5xl px-4 py-10">
         <Outlet />
       </main>
 

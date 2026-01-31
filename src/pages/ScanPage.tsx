@@ -43,20 +43,20 @@ export function ScanPage() {
   return (
     <div className="space-y-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight text-white">Generate a Risk Report</h1>
-        <p className="max-w-2xl text-slate-300">
+        <h1 className="text-4xl font-semibold tracking-tight text-white">Generate a Risk Report</h1>
+        <p className="max-w-2xl text-base leading-relaxed text-slate-300">
           Fast, explainable Solana token risk snapshots you can share. This prototype uses <span className="text-slate-200">fake data</span> to polish UX.
         </p>
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-sm">
+      <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.03] p-6 shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
         <form className="space-y-4" onSubmit={onSubmit}>
           <label className="block text-sm font-medium text-slate-200">Solana token address</label>
           <input
             value={tokenAddress}
             onChange={(e) => setTokenAddress(e.target.value)}
             placeholder="Paste token address…"
-            className="w-full rounded-xl border border-white/10 bg-[#0b1020] px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none ring-0 focus:border-white/20"
+            className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none ring-0 focus:border-white/25 focus:bg-black/25"
           />
           {error ? <div className="text-sm text-rose-200">{error}</div> : null}
 
@@ -66,7 +66,7 @@ export function ScanPage() {
             </div>
             <button
               disabled={!canSubmit}
-              className="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[#0b1020] transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center justify-center rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-[#0b1020] transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {busy ? "Scanning…" : "Generate Risk Report"}
             </button>
