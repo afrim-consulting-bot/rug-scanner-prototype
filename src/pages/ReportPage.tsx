@@ -51,13 +51,13 @@ export function ReportPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-2">
         <div className="text-xs uppercase tracking-wider text-slate-400">Rug Scanner</div>
-        <h1 className="text-3xl font-semibold tracking-tight text-white">Risk Report</h1>
+        <h1 className="text-4xl font-semibold tracking-tight text-white">Risk Report</h1>
         <div className="text-sm text-slate-300">
-          Token: <span className="text-slate-200">{r.tokenAddress}</span>
+          Token: <span className="font-mono text-slate-200">{r.tokenAddress}</span>
         </div>
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+      <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.03] p-6 shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
@@ -65,7 +65,7 @@ export function ReportPage() {
                 {levelLabel(r.riskLevel)}
               </span>
               <span className="text-sm text-slate-300">
-                Risk Score: <span className="text-white font-semibold">{r.riskScore}</span> / 99
+                Risk Score: <span className="text-white font-semibold tabular-nums">{r.riskScore}</span> / 99
               </span>
             </div>
 
@@ -85,9 +85,9 @@ export function ReportPage() {
             <div className="flex gap-2">
               <button
                 onClick={onShare}
-                className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[#0b1020]"
+                className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[#0b1020] transition hover:bg-slate-100"
               >
-                {copied ? "Copied" : "Share Risk Report"}
+                {copied ? "Link copied" : "Share Risk Report"}
               </button>
               <button
                 onClick={onRescan}
