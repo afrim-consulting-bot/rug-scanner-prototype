@@ -84,7 +84,7 @@ export function ScanPage() {
           <div className="mt-1 text-sm text-slate-300">Avoids “100 = guarantee” vibes.</div>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <div className="text-sm font-semibold text-white">Ungguessable share links</div>
+          <div className="text-sm font-semibold text-white">Unguessable share links</div>
           <div className="mt-1 text-sm text-slate-300">Public, unlisted URLs for virality.</div>
         </div>
       </div>

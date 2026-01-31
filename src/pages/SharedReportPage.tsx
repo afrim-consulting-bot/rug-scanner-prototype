@@ -95,11 +95,6 @@ export function SharedReportPage() {
         </div>
       ) : null}
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-xs text-slate-400">
-        <div>
-          <strong className="text-slate-200">Disclaimer:</strong> signals-based risk snapshot — not a code audit. Educational content only; not investment advice.
-        </div>
-      </div>
     </div>
   );
 }
