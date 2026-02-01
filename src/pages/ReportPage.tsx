@@ -12,6 +12,7 @@ export function ReportPage() {
   const [copied, setCopied] = useState(false);
   const [copyOk, setCopyOk] = useState(true);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [tokenCopied, setTokenCopied] = useState(false);
 
   const report = useMemo(() => (id ? findById(id) : undefined), [id]);
 
@@ -65,8 +66,24 @@ export function ReportPage() {
       <div className="flex flex-col gap-2">
         <div className="text-xs uppercase tracking-[0.22em] text-slate-400">Rug Scanner</div>
         <h1 className="text-4xl font-semibold tracking-tight text-white">Risk Report</h1>
-        <div className="text-sm text-slate-300">
-          Token: <span className="font-mono text-slate-200">{r.tokenAddress}</span>
+        <div className="flex flex-wrap items-center gap-2 text-sm text-slate-300">
+          <div>
+            Token: <span className="font-mono text-slate-200">{r.tokenAddress}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setTokenCopied(true);
+              setTimeout(() => setTokenCopied(false), 900);
+              void navigator.clipboard.writeText(r.tokenAddress).catch(() => {
+                // ignore
+              });
+            }}
+            className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-200 transition hover:bg-white/10 hover:border-white/20"
+            title="Copy token address"
+          >
+            {tokenCopied ? "Copied" : "Copy"}
+          </button>
         </div>
       </div>
 

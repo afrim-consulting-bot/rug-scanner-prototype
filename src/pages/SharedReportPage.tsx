@@ -7,6 +7,7 @@ import { SignalChips } from "../components/SignalChips";
 export function SharedReportPage() {
   const { shareId } = useParams();
   const [expanded, setExpanded] = useState(false);
+  const [tokenCopied, setTokenCopied] = useState(false);
 
   const report = useMemo(() => (shareId ? findByShareId(shareId) : undefined), [shareId]);
 
@@ -34,8 +35,24 @@ export function SharedReportPage() {
               </span>
             </div>
 
-            <div className="text-sm text-slate-300">
-              Token: <span className="font-mono text-slate-200">{report.tokenAddress}</span>
+            <div className="flex flex-wrap items-center gap-2 text-sm text-slate-300">
+              <div>
+                Token: <span className="font-mono text-slate-200">{report.tokenAddress}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setTokenCopied(true);
+                  setTimeout(() => setTokenCopied(false), 900);
+                  void navigator.clipboard.writeText(report.tokenAddress).catch(() => {
+                    // ignore
+                  });
+                }}
+                className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-200 transition hover:bg-white/10 hover:border-white/20"
+                title="Copy token address"
+              >
+                {tokenCopied ? "Copied" : "Copy"}
+              </button>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
