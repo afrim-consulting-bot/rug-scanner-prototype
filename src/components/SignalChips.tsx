@@ -32,7 +32,7 @@ export function SignalChips({ checks }: { checks: RiskCheck[] }) {
       {checks.map((c) => (
         <span
           key={c.key}
-          className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide ${chipClasses(
+          className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${chipClasses(
             c.status
           )}`}
           title={`${c.title}: ${c.status}`}

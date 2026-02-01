@@ -33,7 +33,7 @@ export function ScanPage() {
       const report = generateFakeReport(addr);
       upsertReport(report);
       nav(`/report/${report.id}`);
-    } catch (err) {
+    } catch {
       setError("Something went wrong. Try again.");
     } finally {
       setBusy(false);

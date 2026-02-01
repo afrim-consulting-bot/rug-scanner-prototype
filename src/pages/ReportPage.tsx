@@ -73,30 +73,35 @@ export function ReportPage() {
       <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.03] p-6 shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-3">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className={`rounded-full px-3 py-1 text-sm font-semibold ${levelClasses(r.riskLevel)}`}>
-                {levelLabel(r.riskLevel)}
+                {levelLabel(r.riskLevel)} risk
               </span>
-              <span className="text-sm text-slate-300">
-                Risk Score: <span className="text-white font-semibold tabular-nums">{r.riskScore}</span> / 99
+              <span className="rounded-full bg-white/5 px-3 py-1 text-xs font-semibold text-slate-200 ring-1 ring-white/10">
+                signals-based snapshot
               </span>
             </div>
 
+            <div className="flex items-end gap-3">
+              <div className="text-5xl font-semibold tracking-tight text-white tabular-nums">{r.riskScore}</div>
+              <div className="pb-1 text-sm text-slate-300">/ 99</div>
+            </div>
+
             <div className="space-y-2">
-              <div className="text-sm font-semibold text-white">Signals checked</div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">Signals checked</div>
               <SignalChips checks={r.checks} />
             </div>
 
             <div>
-              <div className="text-sm font-semibold text-white">Top drivers</div>
-              <ul className="mt-2 space-y-1 text-sm text-slate-300">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">Top drivers</div>
+              <ul className="mt-2 space-y-1 text-sm text-slate-200">
                 {r.topDrivers.map((d) => (
                   <li key={d}>• {d}</li>
                 ))}
               </ul>
             </div>
 
-            <div className="text-xs text-slate-400">Updated: {new Date(r.createdAtIso).toLocaleString()}</div>
+            <div className="text-xs text-slate-400">Updated: {new Date(r.createdAtIso).toLocaleString()} • Data can change — re-scan</div>
           </div>
 
           <div className="flex flex-col gap-2 sm:items-end">
