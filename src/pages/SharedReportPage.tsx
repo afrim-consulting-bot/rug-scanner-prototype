@@ -14,6 +14,12 @@ function formatUpdated(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
 }
 
+function shortAddress(addr: string) {
+  const a = addr.trim();
+  if (a.length <= 14) return a;
+  return `${a.slice(0, 8)}…${a.slice(-6)}`;
+}
+
 function renderDriver(d: string) {
   const idx = d.indexOf(":");
   if (idx === -1) return <span>{d}</span>;
@@ -59,7 +65,10 @@ export function SharedReportPage() {
 
             <div className="flex flex-wrap items-center gap-2 text-sm text-slate-300">
               <div>
-                Token: <span className="font-mono text-slate-200 break-all">{report.tokenAddress}</span>
+                Token:{" "}
+                <span className="font-mono text-slate-200" title={report.tokenAddress}>
+                  {shortAddress(report.tokenAddress)}
+                </span>
               </div>
               <button
                 type="button"
@@ -112,7 +121,7 @@ export function SharedReportPage() {
               </div>
             </div>
 
-            <div className="text-xs text-slate-400">Updated: {formatUpdated(report.createdAtIso)} • Data can change — run your own scan</div>
+            <div className="text-xs text-slate-400">Updated: {formatUpdated(report.createdAtIso)} • Data can change</div>
           </div>
 
           <div className="flex flex-col gap-2 sm:items-end">
@@ -125,7 +134,7 @@ export function SharedReportPage() {
             <div className="text-xs text-slate-400">Free: 3 scans/day</div>
             <button
               onClick={() => setExpanded((v) => !v)}
-              className="text-sm text-slate-300 underline-offset-4 hover:text-white hover:underline"
+              className="text-sm text-slate-400 underline-offset-4 hover:text-white hover:underline"
             >
               {expanded ? "Hide details" : "Expand details"}
             </button>

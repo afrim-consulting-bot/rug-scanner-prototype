@@ -71,6 +71,12 @@ export function ReportPage() {
     return new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
   }
 
+  function shortAddress(addr: string) {
+    const a = addr.trim();
+    if (a.length <= 14) return a;
+    return `${a.slice(0, 8)}…${a.slice(-6)}`;
+  }
+
   function renderDriver(d: string) {
     const idx = d.indexOf(":");
     if (idx === -1) return <span>{d}</span>;
@@ -90,7 +96,10 @@ export function ReportPage() {
         <h1 className="text-4xl font-semibold tracking-tight text-white">Risk Report</h1>
         <div className="flex flex-wrap items-center gap-2 text-sm text-slate-300">
           <div>
-            Token: <span className="font-mono text-slate-200 break-all">{r.tokenAddress}</span>
+            Token:{" "}
+            <span className="font-mono text-slate-200" title={r.tokenAddress}>
+              {shortAddress(r.tokenAddress)}
+            </span>
           </div>
           <button
             type="button"
@@ -147,14 +156,14 @@ export function ReportPage() {
               </div>
             </div>
 
-            <div className="text-xs text-slate-400">Updated: {formatUpdated(r.createdAtIso)} • Data can change — re-scan before buying</div>
+            <div className="text-xs text-slate-400">Updated: {formatUpdated(r.createdAtIso)} • Data can change</div>
           </div>
 
           <div className="flex flex-col gap-2 sm:items-end">
             <div className="flex gap-2">
               <button
                 onClick={onShare}
-                className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[#0b1020] transition hover:bg-slate-100"
+                className="rounded-xl bg-white/90 px-4 py-2 text-sm font-semibold text-[#0b1020] shadow-[0_0_0_1px_rgba(255,255,255,0.25)] transition hover:bg-white"
               >
                 {copied ? (copyOk ? "Link copied" : "Link ready") : "Share Risk Report"}
               </button>
@@ -170,7 +179,7 @@ export function ReportPage() {
               <div className="flex flex-col items-start gap-1 sm:items-end">
                 <a
                   href={shareUrl}
-                  className="text-sm text-slate-300 underline-offset-4 hover:text-white hover:underline"
+                  className="text-sm text-slate-400 underline-offset-4 hover:text-white hover:underline"
                 >
                   Open shared report
                 </a>
@@ -182,7 +191,7 @@ export function ReportPage() {
 
             <button
               onClick={() => setExpanded((v) => !v)}
-              className="text-sm text-slate-300 underline-offset-4 hover:text-white hover:underline"
+              className="text-sm text-slate-400 underline-offset-4 hover:text-white hover:underline"
             >
               {expanded ? "Hide details" : "Expand details"}
             </button>
