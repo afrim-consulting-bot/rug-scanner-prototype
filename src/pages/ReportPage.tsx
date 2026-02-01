@@ -3,12 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { enableShare, findById, upsertReport } from "../storage";
 import { levelClasses, levelLabel, statusClasses, statusLabel } from "../ui";
 import { generateFakeReport } from "../fakeReport";
+import { SignalChips } from "../components/SignalChips";
 
 export function ReportPage() {
   const { id } = useParams();
   const nav = useNavigate();
   const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copyOk, setCopyOk] = useState(true);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
 
   const report = useMemo(() => (id ? findById(id) : undefined), [id]);
@@ -33,11 +35,20 @@ export function ReportPage() {
   async function onShare() {
     const updated = enableShare(r.id);
     if (!updated?.shareId) return;
+
     const url = `${window.location.origin}/r/${updated.shareId}`;
     setShareUrl(url);
-    await navigator.clipboard.writeText(url);
+
+    // Show immediate feedback, even if clipboard permissions are slow/blocked.
     setCopied(true);
     setTimeout(() => setCopied(false), 1200);
+
+    setCopyOk(true);
+    void navigator.clipboard.writeText(url).catch(() => {
+      // Clipboard can fail in some contexts (permissions, non-secure, automation).
+      // Still show the URL so the user can copy it manually.
+      setCopyOk(false);
+    });
   }
 
   async function onRescan() {
@@ -71,6 +82,11 @@ export function ReportPage() {
               </span>
             </div>
 
+            <div className="space-y-2">
+              <div className="text-sm font-semibold text-white">Signals checked</div>
+              <SignalChips checks={r.checks} />
+            </div>
+
             <div>
               <div className="text-sm font-semibold text-white">Top drivers</div>
               <ul className="mt-2 space-y-1 text-sm text-slate-300">
@@ -89,7 +105,7 @@ export function ReportPage() {
                 onClick={onShare}
                 className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[#0b1020] transition hover:bg-slate-100"
               >
-                {copied ? "Link copied" : "Share Risk Report"}
+                {copied ? (copyOk ? "Link copied" : "Link ready") : "Share Risk Report"}
               </button>
               <button
                 onClick={onRescan}
@@ -100,12 +116,17 @@ export function ReportPage() {
             </div>
 
             {shareUrl ? (
-              <a
-                href={shareUrl}
-                className="text-sm text-slate-300 underline-offset-4 hover:text-white hover:underline"
-              >
-                Open shared report
-              </a>
+              <div className="flex flex-col items-start gap-1 sm:items-end">
+                <a
+                  href={shareUrl}
+                  className="text-sm text-slate-300 underline-offset-4 hover:text-white hover:underline"
+                >
+                  Open shared report
+                </a>
+                {!copyOk ? (
+                  <div className="text-xs text-slate-400">Clipboard blocked — copy the link from the address bar.</div>
+                ) : null}
+              </div>
             ) : null}
 
             <button

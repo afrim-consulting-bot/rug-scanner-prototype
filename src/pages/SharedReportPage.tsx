@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { findByShareId } from "../storage";
 import { levelClasses, levelLabel, statusClasses, statusLabel } from "../ui";
+import { SignalChips } from "../components/SignalChips";
 
 export function SharedReportPage() {
   const { shareId } = useParams();
@@ -37,6 +38,11 @@ export function SharedReportPage() {
               <span className="text-sm text-slate-300">
                 Score: <span className="text-white font-semibold tabular-nums">{report.riskScore}</span> / 99
               </span>
+            </div>
+
+            <div className="space-y-2">
+              <div className="text-sm font-semibold text-white">Signals checked</div>
+              <SignalChips checks={report.checks} />
             </div>
 
             <div>
