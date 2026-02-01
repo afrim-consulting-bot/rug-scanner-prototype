@@ -68,7 +68,7 @@ export function ReportPage() {
         <h1 className="text-4xl font-semibold tracking-tight text-white">Risk Report</h1>
         <div className="flex flex-wrap items-center gap-2 text-sm text-slate-300">
           <div>
-            Token: <span className="font-mono text-slate-200">{r.tokenAddress}</span>
+            Token: <span className="font-mono text-slate-200 break-all">{r.tokenAddress}</span>
           </div>
           <button
             type="button"

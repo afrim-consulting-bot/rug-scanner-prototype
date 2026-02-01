@@ -37,7 +37,7 @@ export function SharedReportPage() {
 
             <div className="flex flex-wrap items-center gap-2 text-sm text-slate-300">
               <div>
-                Token: <span className="font-mono text-slate-200">{report.tokenAddress}</span>
+                Token: <span className="font-mono text-slate-200 break-all">{report.tokenAddress}</span>
               </div>
               <button
                 type="button"
