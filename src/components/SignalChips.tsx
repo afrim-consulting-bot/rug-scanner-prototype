@@ -13,18 +13,32 @@ function chipClasses(status: CheckStatus) {
   }
 }
 
+function dotClasses(status: CheckStatus) {
+  switch (status) {
+    case "pass":
+      return "bg-emerald-300";
+    case "warn":
+      return "bg-amber-300";
+    case "fail":
+      return "bg-rose-300";
+    default:
+      return "bg-slate-300";
+  }
+}
+
 export function SignalChips({ checks }: { checks: RiskCheck[] }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       {checks.map((c) => (
         <span
           key={c.key}
-          className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide ${chipClasses(
+          className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide ${chipClasses(
             c.status
           )}`}
           title={`${c.title}: ${c.status}`}
         >
-          {c.title}
+          <span className={`h-1.5 w-1.5 rounded-full ${dotClasses(c.status)}`} aria-hidden="true" />
+          <span className="leading-none">{c.title}</span>
         </span>
       ))}
     </div>
