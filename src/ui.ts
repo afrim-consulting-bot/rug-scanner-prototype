@@ -1,7 +1,7 @@
 import type { RiskLevel, CheckStatus } from "./types";
 
 export function levelLabel(level: RiskLevel) {
-  return level === "low" ? "Low" : level === "medium" ? "Medium" : "High";
+  return level === "low" ? "Low" : level === "medium" ? "Medium" : "Elevated";
 }
 
 export function levelClasses(level: RiskLevel) {

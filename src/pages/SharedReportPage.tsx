@@ -4,6 +4,28 @@ import { findByShareId } from "../storage";
 import { levelClasses, levelLabel, statusClasses, statusLabel } from "../ui";
 import { SignalChips } from "../components/SignalChips";
 
+function scorePercentile(score: number) {
+  // UX-only: approximate context for the reader (not a statistical claim).
+  const pct = Math.round(50 + (score / 99) * 45);
+  return Math.max(50, Math.min(99, pct));
+}
+
+function formatUpdated(iso: string) {
+  return new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+}
+
+function renderDriver(d: string) {
+  const idx = d.indexOf(":");
+  if (idx === -1) return <span>{d}</span>;
+  const head = d.slice(0, idx + 1);
+  const tail = d.slice(idx + 1).trimStart();
+  return (
+    <>
+      <span className="font-semibold text-slate-100">{head}</span> {tail}
+    </>
+  );
+}
+
 export function SharedReportPage() {
   const { shareId } = useParams();
   const [expanded, setExpanded] = useState(false);
@@ -68,6 +90,7 @@ export function SharedReportPage() {
               <div className="text-5xl font-semibold tracking-tight text-white tabular-nums">{report.riskScore}</div>
               <div className="pb-1 text-sm text-slate-300">/ 99</div>
             </div>
+            <div className="text-xs text-slate-400">Higher than ~{scorePercentile(report.riskScore)}% of scanned tokens</div>
 
             <div className="space-y-2">
               <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">Signals checked</div>
@@ -78,12 +101,18 @@ export function SharedReportPage() {
               <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">Top drivers</div>
               <ul className="mt-2 space-y-1 text-sm text-slate-200">
                 {report.topDrivers.map((d) => (
-                  <li key={d}>• {d}</li>
+                  <li key={d}>• {renderDriver(d)}</li>
                 ))}
               </ul>
+              <div className="mt-3 rounded-xl border border-white/10 bg-white/[0.03] p-3 text-sm text-slate-300">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">What this means</div>
+                <div className="mt-1">
+                  This token shows multiple risk patterns often associated with rug pulls or rapid liquidity exits. Caution is warranted.
+                </div>
+              </div>
             </div>
 
-            <div className="text-xs text-slate-400">Updated: {new Date(report.createdAtIso).toLocaleString()} • Data can change — run your own scan</div>
+            <div className="text-xs text-slate-400">Updated: {formatUpdated(report.createdAtIso)} • Data can change — run your own scan</div>
           </div>
 
           <div className="flex flex-col gap-2 sm:items-end">
