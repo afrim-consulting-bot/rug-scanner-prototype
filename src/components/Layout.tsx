@@ -23,9 +23,10 @@ export function Layout() {
             </div>
           </Link>
           <nav className="flex items-center gap-3 text-sm">
-            <Link className="text-slate-300 hover:text-white" to="/">
+            <Link className="text-slate-200 hover:text-white" to="/">
               Scan
             </Link>
+            <span className="h-4 w-px bg-white/10" aria-hidden="true" />
             <a
               className="text-slate-300 hover:text-white"
               href="https://github.com"
@@ -43,10 +44,10 @@ export function Layout() {
       </main>
 
       <footer className="border-t border-white/10">
-        <div className="mx-auto max-w-5xl px-4 py-6 text-xs text-slate-500">
-          <div className="flex flex-col gap-2">
+        <div className="mx-auto max-w-5xl px-4 py-6 text-xs leading-relaxed text-slate-600">
+          <div className="flex flex-col gap-1.5">
             <div>
-              Educational signals only. Not a code audit or investment advice.
+              Signals-based risk snapshot. Not a code audit or investment advice.
             </div>
             <div>
               Risk can change quickly — re-scan before buying.

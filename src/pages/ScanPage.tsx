@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { generateFakeReport } from "../fakeReport";
 import { upsertReport } from "../storage";
@@ -13,9 +13,33 @@ export function ScanPage() {
   const [tokenAddress, setTokenAddress] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [scanStep, setScanStep] = useState<string | null>(null);
   const nav = useNavigate();
 
   const canSubmit = useMemo(() => isLikelySolAddress(tokenAddress) && !busy, [tokenAddress, busy]);
+
+  useEffect(() => {
+    if (!busy) {
+      setScanStep(null);
+      return;
+    }
+
+    const steps = [
+      "Analyzing ownership…",
+      "Checking liquidity signals…",
+      "Evaluating trading behavior…",
+      "Reviewing metadata…",
+    ];
+
+    let i = 0;
+    setScanStep(steps[i]);
+    const id = window.setInterval(() => {
+      i = (i + 1) % steps.length;
+      setScanStep(steps[i]);
+    }, 650);
+
+    return () => window.clearInterval(id);
+  }, [busy]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -56,23 +80,21 @@ export function ScanPage() {
             value={tokenAddress}
             onChange={(e) => setTokenAddress(e.target.value)}
             placeholder="Paste Solana token address (e.g. 7xKX…9Qp)"
-            className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-4 text-base text-white placeholder:text-slate-500 outline-none ring-0 focus:border-white/25 focus:bg-black/25"
+            className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-4 text-[17px] text-white placeholder:text-slate-400 outline-none ring-0 focus:border-white/25 focus:bg-black/25"
           />
           <div className="text-xs text-slate-400">We don’t connect wallets or execute transactions.</div>
           {error ? <div className="text-sm text-rose-200">{error}</div> : null}
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-xs text-slate-500">
-              Free tier: <span className="text-slate-300">3 scans/day</span>
-            </div>
+            <div className="text-xs text-slate-600">Free tier available</div>
             <div className="flex flex-col items-start gap-1 sm:items-end">
               <button
                 disabled={!canSubmit}
-                className="inline-flex w-full items-center justify-center rounded-xl bg-white px-6 py-3 text-sm font-semibold text-[#0b1020] transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                className="inline-flex w-full items-center justify-center rounded-xl bg-white px-6 py-3.5 text-sm font-semibold text-[#0b1020] shadow-[0_0_0_1px_rgba(255,255,255,0.35),0_10px_30px_rgba(0,0,0,0.35)] transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
               >
                 {busy ? "Scanning…" : "Scan Token Risk"}
               </button>
-              <div className="text-[11px] text-slate-500">Takes ~3 seconds</div>
+              <div className="text-[11px] text-slate-500">{scanStep ?? "Takes ~3 seconds"}</div>
             </div>
           </div>
         </form>
