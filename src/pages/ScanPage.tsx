@@ -79,9 +79,10 @@ export function ScanPage() {
           <input
             value={tokenAddress}
             onChange={(e) => setTokenAddress(e.target.value)}
-            placeholder="Paste Solana token address (e.g. 7xKX…9Qp)"
-            className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-4 text-[17px] text-white placeholder:text-slate-400 outline-none ring-0 focus:border-white/25 focus:bg-black/25"
+            placeholder="Paste Solana token address"
+            className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-4 text-[17px] text-white placeholder:text-slate-300 outline-none ring-0 focus:border-white/25 focus:bg-black/25"
           />
+          <div className="text-xs text-slate-400">Example: <span className="font-mono text-slate-300">7xKX…9Qp</span></div>
           <div className="text-xs text-slate-400">We don’t connect wallets or execute transactions.</div>
           {error ? <div className="text-sm text-rose-200">{error}</div> : null}
 
@@ -90,7 +91,7 @@ export function ScanPage() {
             <div className="flex flex-col items-start gap-1 sm:items-end">
               <button
                 disabled={!canSubmit}
-                className="inline-flex w-full items-center justify-center rounded-xl bg-white px-6 py-3.5 text-sm font-semibold text-[#0b1020] shadow-[0_0_0_1px_rgba(255,255,255,0.35),0_10px_30px_rgba(0,0,0,0.35)] transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                className="inline-flex w-full items-center justify-center rounded-xl bg-white px-6 py-3.5 text-sm font-semibold text-[#0b1020] shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_0_0_1px_rgba(255,255,255,0.35),0_10px_30px_rgba(0,0,0,0.35)] transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
               >
                 {busy ? "Scanning…" : "Scan Token Risk"}
               </button>
