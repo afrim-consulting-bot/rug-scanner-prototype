@@ -109,7 +109,7 @@ export function ReportPage() {
               </button>
               <button
                 onClick={onRescan}
-                className="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
+                className="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10 hover:border-white/25"
               >
                 Re-scan
               </button>
@@ -144,9 +144,9 @@ export function ReportPage() {
           {r.checks.map((c) => (
             <details
               key={c.key}
-              className="group rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-5 shadow-[0_10px_28px_rgba(0,0,0,0.28)]"
+              className="group rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-5 shadow-[0_10px_28px_rgba(0,0,0,0.28)] transition hover:border-white/20 hover:bg-white/[0.04]"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
+              <summary className="-mx-2 flex cursor-pointer list-none items-center justify-between gap-3 rounded-xl px-2 py-1 transition hover:bg-white/5">
                 <div className="space-y-1">
                   <div className="text-sm font-semibold text-white">{c.title}</div>
                   <div className={`text-xs ${statusClasses(c.status)}`}>{statusLabel(c.status)} — {c.short}</div>
