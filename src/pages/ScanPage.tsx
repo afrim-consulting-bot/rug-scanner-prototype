@@ -42,50 +42,50 @@ export function ScanPage() {
 
   return (
     <div className="space-y-8">
-      <div className="space-y-2">
-        <h1 className="text-4xl font-semibold tracking-tight text-white">Generate a Risk Report</h1>
+      <div className="space-y-3">
+        <h1 className="text-4xl font-semibold tracking-tight text-white">Instant Solana Token Risk Snapshot</h1>
         <p className="max-w-2xl text-base leading-relaxed text-slate-300">
-          Fast, explainable Solana token risk snapshots you can share. This prototype uses <span className="text-slate-200">fake data</span> to polish UX.
+          A fast, signals-based scan to surface common rug-pull risk patterns — before you commit capital.
         </p>
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.03] p-6 shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
+      <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.10] to-white/[0.04] p-6 shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
         <form className="space-y-4" onSubmit={onSubmit}>
           <label className="block text-sm font-medium text-slate-200">Solana token address</label>
           <input
             value={tokenAddress}
             onChange={(e) => setTokenAddress(e.target.value)}
-            placeholder="Paste token address…"
-            className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none ring-0 focus:border-white/25 focus:bg-black/25"
+            placeholder="Paste Solana token address (e.g. 7xKX…9Qp)"
+            className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-4 text-base text-white placeholder:text-slate-500 outline-none ring-0 focus:border-white/25 focus:bg-black/25"
           />
+          <div className="text-xs text-slate-400">We don’t connect wallets or execute transactions.</div>
           {error ? <div className="text-sm text-rose-200">{error}</div> : null}
 
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-xs text-slate-400">
-              Free tier: <span className="text-slate-200">3 scans/day</span> (prototype does not enforce limits).
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="text-xs text-slate-500">
+              Free tier: <span className="text-slate-300">3 scans/day</span>
             </div>
-            <button
-              disabled={!canSubmit}
-              className="inline-flex items-center justify-center rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-[#0b1020] transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {busy ? "Scanning…" : "Generate Risk Report"}
-            </button>
+            <div className="flex flex-col items-start gap-1 sm:items-end">
+              <button
+                disabled={!canSubmit}
+                className="inline-flex w-full items-center justify-center rounded-xl bg-white px-6 py-3 text-sm font-semibold text-[#0b1020] transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+              >
+                {busy ? "Scanning…" : "Scan Token Risk"}
+              </button>
+              <div className="text-[11px] text-slate-500">Takes ~3 seconds</div>
+            </div>
           </div>
         </form>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <div className="text-sm font-semibold text-white">Summary first</div>
-          <div className="mt-1 text-sm text-slate-300">The share page shows a clean summary with optional expand.</div>
-        </div>
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <div className="text-sm font-semibold text-white">0–99 score</div>
-          <div className="mt-1 text-sm text-slate-300">Avoids “100 = guarantee” vibes.</div>
-        </div>
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <div className="text-sm font-semibold text-white">Unguessable share links</div>
-          <div className="mt-1 text-sm text-slate-300">Public, unlisted URLs for virality.</div>
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">What this scan checks</div>
+        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-slate-200">
+          <span>• Authorities</span>
+          <span>• Liquidity risk signals</span>
+          <span>• Holder concentration</span>
+          <span>• Trading behavior</span>
+          <span>• Metadata flags</span>
         </div>
       </div>
     </div>

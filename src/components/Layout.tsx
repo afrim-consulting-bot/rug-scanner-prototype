@@ -13,8 +13,13 @@ export function Layout() {
               className="h-9 w-9 rounded-lg object-cover ring-1 ring-white/10"
             />
             <div className="leading-tight">
-              <div className="text-sm font-semibold tracking-wide text-white">Rug Scanner</div>
-              <div className="text-xs text-slate-300">Risk Report (prototype)</div>
+              <div className="flex items-center gap-2 text-sm font-semibold tracking-wide text-white">
+                Rug Scanner
+                <span className="rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-200 ring-1 ring-white/10">
+                  Beta
+                </span>
+              </div>
+              <div className="text-xs text-slate-300">Solana Risk Report</div>
             </div>
           </Link>
           <nav className="flex items-center gap-3 text-sm">
@@ -38,12 +43,15 @@ export function Layout() {
       </main>
 
       <footer className="border-t border-white/10">
-        <div className="mx-auto max-w-5xl px-4 py-6 text-xs text-slate-400">
+        <div className="mx-auto max-w-5xl px-4 py-6 text-xs text-slate-500">
           <div className="flex flex-col gap-2">
             <div>
-              <strong className="text-slate-200">Disclaimer:</strong> signals-based risk snapshot — not a code audit. Educational content only; not investment advice.
+              Educational signals only. Not a code audit or investment advice.
             </div>
-            <div>Risk can change quickly — re-scan before buying.</div>
+            <div>
+              Risk can change quickly — re-scan before buying.
+            </div>
+            <div className="text-slate-600">Built by Vault6 Media.</div>
           </div>
         </div>
       </footer>
