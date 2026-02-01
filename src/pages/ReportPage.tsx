@@ -206,12 +206,12 @@ export function ReportPage() {
               key={c.key}
               className="group rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-5 shadow-[0_10px_28px_rgba(0,0,0,0.28)] transition hover:border-white/20 hover:bg-white/[0.04]"
             >
-              <summary className="-mx-2 flex cursor-pointer list-none items-center justify-between gap-3 rounded-xl px-2 py-1 transition hover:bg-white/5">
-                <div className="space-y-1">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-xl px-4 py-2 transition hover:bg-white/5">
+                <div className="min-w-0 space-y-1 pr-3">
                   <div className="text-sm font-semibold text-white">{c.title}</div>
                   <div className={`text-xs ${statusClasses(c.status)}`}>{statusLabel(c.status)} — {c.short}</div>
                 </div>
-                <div className="text-slate-400 group-open:rotate-180 transition">▾</div>
+                <div className="w-6 flex-shrink-0 text-right text-slate-400 transition group-open:rotate-180">▾</div>
               </summary>
               <div className="mt-3 space-y-2 text-sm text-slate-300">
                 <div>
