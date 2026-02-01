@@ -63,7 +63,7 @@ export function ReportPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2">
-        <div className="text-xs uppercase tracking-wider text-slate-400">Rug Scanner</div>
+        <div className="text-xs uppercase tracking-[0.22em] text-slate-400">Rug Scanner</div>
         <h1 className="text-4xl font-semibold tracking-tight text-white">Risk Report</h1>
         <div className="text-sm text-slate-300">
           Token: <span className="font-mono text-slate-200">{r.tokenAddress}</span>

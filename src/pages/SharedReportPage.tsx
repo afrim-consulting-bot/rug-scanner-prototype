@@ -26,7 +26,7 @@ export function SharedReportPage() {
       <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.03] p-6 shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
-            <div className="text-xs uppercase tracking-wider text-slate-400">Rug Scanner — Shared</div>
+            <div className="text-xs uppercase tracking-[0.22em] text-slate-400">Rug Scanner — Shared</div>
             <div className="text-2xl font-semibold text-white">Risk Report</div>
             <div className="text-sm text-slate-300">
               Token: <span className="font-mono text-slate-200">{report.tokenAddress}</span>
