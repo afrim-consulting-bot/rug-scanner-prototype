@@ -26,6 +26,23 @@ function dotClasses(status: CheckStatus) {
   }
 }
 
+function shortTitle(c: RiskCheck) {
+  switch (c.key) {
+    case "authorities":
+      return "Authorities";
+    case "liquidity":
+      return "Liquidity";
+    case "holders":
+      return "Holders";
+    case "trading":
+      return "Trading";
+    case "metadata":
+      return "Metadata";
+    default:
+      return c.title;
+  }
+}
+
 export function SignalChips({ checks }: { checks: RiskCheck[] }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -38,7 +55,7 @@ export function SignalChips({ checks }: { checks: RiskCheck[] }) {
           title={`${c.title}: ${c.status}`}
         >
           <span className={`h-1.5 w-1.5 rounded-full ${dotClasses(c.status)}`} aria-hidden="true" />
-          <span className="leading-none">{c.title}</span>
+          <span className="leading-none">{shortTitle(c)}</span>
         </span>
       ))}
     </div>
