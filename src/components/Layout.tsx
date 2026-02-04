@@ -10,7 +10,7 @@ export function Layout() {
               src="/brand/rugscanner-logo.png"
               alt=""
               aria-hidden="true"
-              className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg object-cover ring-1 ring-white/10"
+              className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl object-cover ring-1 ring-white/10"
             />
             <div className="leading-tight">
               <div className="flex items-center gap-2 text-sm font-semibold tracking-wide text-white">
@@ -26,15 +26,6 @@ export function Layout() {
             <Link className="text-slate-200 hover:text-white" to="/">
               Scan
             </Link>
-            <span className="h-4 w-px bg-white/10" aria-hidden="true" />
-            <a
-              className="text-slate-300 hover:text-white"
-              href="https://github.com"
-              target="_blank"
-              rel="noreferrer"
-            >
-              GitHub
-            </a>
           </nav>
         </div>
       </header>

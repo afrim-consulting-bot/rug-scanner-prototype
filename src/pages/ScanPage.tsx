@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { generateFakeReport } from "../fakeReport";
 import { upsertReport } from "../storage";
 
+const SAMPLE_TOKEN = "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJos9Qp";
+
 function isLikelySolAddress(v: string) {
   // Lightweight UX validation (not strict base58)
   const trimmed = v.trim();
+  // Solana addresses are base58; typical length 32–44, but token mints can vary.
   return trimmed.length >= 32 && trimmed.length <= 64;
 }
 
@@ -52,8 +55,9 @@ export function ScanPage() {
 
     setBusy(true);
     try {
-      // fake network delay for realism
-      await new Promise((r) => setTimeout(r, 450));
+      // Fake network delay for realism (matches the UI promise of ~3 seconds)
+      const delay = 2200 + Math.floor(Math.random() * 900);
+      await new Promise((r) => setTimeout(r, delay));
       const report = generateFakeReport(addr);
       upsertReport(report);
       nav(`/report/${report.id}`);
@@ -82,7 +86,22 @@ export function ScanPage() {
             placeholder="Paste Solana token address"
             className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-4 text-[17px] text-white placeholder:text-slate-300 outline-none ring-0 focus:border-white/25 focus:bg-black/25"
           />
-          <div className="text-xs text-slate-400">Example: <span className="font-mono text-slate-300">7xKX…9Qp</span></div>
+          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+            <div>
+              Example: <span className="font-mono text-slate-300">7xKX…9Qp</span>
+            </div>
+            <button
+              type="button"
+              className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-200 transition hover:bg-white/10 hover:border-white/20"
+              onClick={() => {
+                setError(null);
+                setTokenAddress(SAMPLE_TOKEN);
+              }}
+              title="Use a sample token address"
+            >
+              Use sample
+            </button>
+          </div>
           <div className="text-xs text-slate-400">We don’t connect wallets or execute transactions.</div>
           {error ? <div className="text-sm text-rose-200">{error}</div> : null}
 
