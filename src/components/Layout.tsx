@@ -7,20 +7,14 @@ export function Layout() {
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2 sm:py-3">
           <Link to="/" className="flex items-center gap-3" aria-label="Rug Scanner">
             <img
-              src="/brand/rugscanner-logo.png"
-              alt=""
-              aria-hidden="true"
-              className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl object-cover ring-1 ring-white/10"
+              src="/brand/rugscanner-horizontal.png"
+              alt="RugScanner.net"
+              className="h-8 w-auto select-none sm:h-9"
+              draggable={false}
             />
-            <div className="leading-tight">
-              <div className="flex items-center gap-2 text-sm font-semibold tracking-wide text-white">
-                Rug Scanner
-                <span className="rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-200 ring-1 ring-white/10">
-                  Beta
-                </span>
-              </div>
-              <div className="hidden text-xs text-slate-300 sm:block">Solana Risk Report</div>
-            </div>
+            <span className="rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-200 ring-1 ring-white/10">
+              Beta
+            </span>
           </Link>
           <nav className="flex items-center gap-3 text-sm">
             <Link className="text-slate-200 hover:text-white" to="/">
