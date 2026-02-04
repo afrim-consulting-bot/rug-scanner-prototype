@@ -55,12 +55,26 @@ export function ScanPage() {
 
     setBusy(true);
     try {
-      // Fake network delay for realism (matches the UI promise of ~3 seconds)
-      const delay = 2200 + Math.floor(Math.random() * 900);
-      await new Promise((r) => setTimeout(r, delay));
-      const report = generateFakeReport(addr);
-      upsertReport(report);
-      nav(`/report/${report.id}`);
+      // Real API (falls back to fake report if API is not available yet)
+      try {
+        const r = await fetch("/api/report", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ tokenAddress: addr }),
+        });
+        const j = await r.json();
+        if (!r.ok) throw new Error(j?.error || "API error");
+        const report = j?.report;
+        if (!report?.id) throw new Error("Bad API response");
+        upsertReport(report);
+        nav(`/report/${report.id}`);
+        return;
+      } catch {
+        // keep UX moving in dev even if keys/server aren't ready
+        const report = generateFakeReport(addr);
+        upsertReport(report);
+        nav(`/report/${report.id}`);
+      }
     } catch {
       setError("Something went wrong. Try again.");
     } finally {
