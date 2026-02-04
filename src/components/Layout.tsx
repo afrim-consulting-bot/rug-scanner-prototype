@@ -6,14 +6,12 @@ export function Layout() {
       <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0b1020]/85 shadow-[0_1px_0_rgba(255,255,255,0.06)] backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2 sm:py-3">
           <Link to="/" className="flex items-center gap-3" aria-label="Rug Scanner">
-            <div className="h-10 w-14 overflow-hidden rounded-xl ring-1 ring-white/10 sm:h-12 sm:w-[72px]">
-              <img
-                src="/brand/rugscanner-logo.png"
-                alt=""
-                aria-hidden="true"
-                className="h-full w-full object-cover object-left"
-              />
-            </div>
+            <img
+              src="/brand/rugscanner-logo.png"
+              alt=""
+              aria-hidden="true"
+              className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl object-cover ring-1 ring-white/10"
+            />
             <div className="leading-tight">
               <div className="flex items-center gap-2 text-sm font-semibold tracking-wide text-white">
                 Rug Scanner
