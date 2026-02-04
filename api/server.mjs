@@ -1,6 +1,8 @@
 import http from "node:http";
 import { URL } from "node:url";
 import dotenv from "dotenv";
+import { PublicKey } from "@solana/web3.js";
+import { MintLayout } from "@solana/spl-token";
 
 // Load local dev env (Vite uses .env* for client; Node needs explicit load)
 // We intentionally keep secrets in .env.local and never commit it.
@@ -8,7 +10,13 @@ dotenv.config({ path: ".env.local" });
 
 const PORT = process.env.API_PORT ? Number(process.env.API_PORT) : 8789;
 const BIRDEYE_API_KEY = process.env.BIRDEYE_API_KEY;
-const SOLANA_RPC_URL = process.env.SOLANA_RPC_URL;
+const HELIUS_API_KEY = process.env.HELIUS_API_KEY;
+
+// Allow either explicit SOLANA_RPC_URL or a Helius key (common dev setup)
+let SOLANA_RPC_URL = process.env.SOLANA_RPC_URL;
+if ((!SOLANA_RPC_URL || /api-key=\s*$/.test(SOLANA_RPC_URL)) && HELIUS_API_KEY) {
+  SOLANA_RPC_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
+}
 
 function json(res, status, body) {
   const payload = JSON.stringify(body);
@@ -30,13 +38,15 @@ async function readJson(req) {
 }
 
 async function solanaRpc(method, params) {
-  if (!SOLANA_RPC_URL) throw new Error("SOLANA_RPC_URL missing");
+  if (!SOLANA_RPC_URL) throw new Error("SOLANA_RPC_URL missing (set SOLANA_RPC_URL or HELIUS_API_KEY)");
   const r = await fetch(SOLANA_RPC_URL, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
   });
-  const j = await r.json();
+
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j?.error?.message || `RPC HTTP ${r.status}`);
   if (j?.error) throw new Error(j.error?.message || "RPC error");
   return j.result;
 }
@@ -88,6 +98,14 @@ function formatUsd(n) {
 }
 
 async function buildReport(tokenAddress) {
+  // Validate token address early so we can give a real error.
+  try {
+    // eslint-disable-next-line no-new
+    new PublicKey(tokenAddress);
+  } catch {
+    throw new Error("Invalid Solana mint address");
+  }
+
   // 1) Birdeye overview (price, liquidity, market cap, etc.)
   let overview = null;
   let oErr = null;
@@ -96,6 +114,15 @@ async function buildReport(tokenAddress) {
     overview = await birdeye(`/defi/token_overview?address=${encodeURIComponent(tokenAddress)}`);
   } catch (e) {
     oErr = String(e?.message || e);
+  }
+
+  // 1b) Birdeye security (holder concentration, etc.)
+  let security = null;
+  let sErr = null;
+  try {
+    security = await birdeye(`/defi/token_security?address=${encodeURIComponent(tokenAddress)}`);
+  } catch (e) {
+    sErr = String(e?.message || e);
   }
 
   // 2) Solana RPC: supply + largest accounts (for holder concentration)
@@ -109,6 +136,15 @@ async function buildReport(tokenAddress) {
     rErr = String(e?.message || e);
   }
 
+  // 3) Solana RPC: mint account info for mint/freeze authority
+  let mintInfo = null;
+  let mErr = null;
+  try {
+    mintInfo = await solanaRpc("getAccountInfo", [tokenAddress, { encoding: "base64" }]);
+  } catch (e) {
+    mErr = String(e?.message || e);
+  }
+
   // Extract some numbers (best-effort; schemas vary)
   const o = overview?.data || overview?.result || overview;
   const price = safeNum(o?.price);
@@ -117,17 +153,54 @@ async function buildReport(tokenAddress) {
   const mc = safeNum(o?.mc);
   const vol24h = safeNum(o?.v24h || o?.volume24h);
 
-  // Holder concentration heuristic
+  // Holder concentration
+  // Prefer Birdeye security if present; fall back to RPC heuristic.
   let top10Pct = null;
+  let holdersDetail = null;
   try {
-    const totalUi = safeNum(supply?.value?.uiAmount);
-    const accounts = Array.isArray(largest?.value) ? largest.value : [];
-    if (totalUi && accounts.length) {
-      const top10 = accounts.slice(0, 10).reduce((sum, a) => sum + (safeNum(a?.uiAmount) || 0), 0);
-      top10Pct = clamp((top10 / totalUi) * 100, 0, 100);
+    const sec = security?.data || security?.result || security;
+    const maybe = safeNum(sec?.top10HolderPercent ?? sec?.top10HolderPercentage ?? sec?.top10_holder_percent);
+    if (maybe != null) {
+      top10Pct = clamp(maybe, 0, 100);
+      holdersDetail = `Birdeye: top 10 holders ~${top10Pct.toFixed(1)}%.`;
     }
   } catch {
     // ignore
+  }
+
+  if (top10Pct == null) {
+    try {
+      const totalUi = safeNum(supply?.value?.uiAmount);
+      const accounts = Array.isArray(largest?.value) ? largest.value : [];
+      if (!totalUi) {
+        holdersDetail = "RPC returned no total supply.";
+      } else if (!accounts.length) {
+        holdersDetail = "RPC returned no largest accounts.";
+      } else {
+        const top10 = accounts.slice(0, 10).reduce((sum, a) => sum + (safeNum(a?.uiAmount) || 0), 0);
+        top10Pct = clamp((top10 / totalUi) * 100, 0, 100);
+        holdersDetail = `RPC heuristic: top 10 holders ~${top10Pct.toFixed(1)}%.`;
+      }
+    } catch (e) {
+      holdersDetail = String(e?.message || e);
+    }
+  }
+
+  // Authorities (mint/freeze)
+  let mintAuthorityEnabled = null;
+  let freezeAuthorityEnabled = null;
+  let authDetail = null;
+  try {
+    const data = mintInfo?.value?.data;
+    const b64 = Array.isArray(data) ? data[0] : null;
+    if (!b64) throw new Error("Mint account data unavailable");
+    const buf = Buffer.from(b64, "base64");
+    const decoded = MintLayout.decode(buf);
+    mintAuthorityEnabled = decoded.mintAuthorityOption === 1;
+    freezeAuthorityEnabled = decoded.freezeAuthorityOption === 1;
+    authDetail = `Mint authority: ${mintAuthorityEnabled ? "ENABLED" : "disabled"} · Freeze authority: ${freezeAuthorityEnabled ? "ENABLED" : "disabled"}`;
+  } catch (e) {
+    authDetail = mErr ? `RPC: ${mErr}` : String(e?.message || e);
   }
 
   // Risk scoring (simple, explainable)
@@ -185,10 +258,10 @@ async function buildReport(tokenAddress) {
     checks.push({
       key: "holders",
       title: "Holder concentration",
-      status: rErr ? "unknown" : "unknown",
-      short: "Holder data unavailable",
+      status: "unknown",
+      short: "Unable to compute top-holder concentration",
       whyItMatters: "High concentration can enable coordinated dumps or sudden liquidity exits.",
-      details: rErr ? `RPC: ${rErr}` : undefined,
+      details: holdersDetail || (rErr ? `RPC: ${rErr}` : sErr ? `Birdeye: ${sErr}` : undefined),
     });
     score += 10;
   } else if (top10Pct >= 60) {
@@ -261,22 +334,54 @@ async function buildReport(tokenAddress) {
     score += 5;
   }
 
-  // Metadata placeholder (until we parse mint + authorities properly)
-  checks.push({
-    key: "authorities",
-    title: "Authorities / mint control",
-    status: "unknown",
-    short: "Not yet implemented",
-    whyItMatters: "Active mint/freeze authority can enable unexpected supply or transfer restrictions.",
-    details: "Next step: parse mint account and confirm mint/freeze authority status.",
-  });
-  score += 8;
+  // Authorities / mint control
+  if (mintAuthorityEnabled == null || freezeAuthorityEnabled == null) {
+    checks.push({
+      key: "authorities",
+      title: "Authorities / mint control",
+      status: "unknown",
+      short: "Unable to determine mint/freeze authority",
+      whyItMatters: "Active mint/freeze authority can enable unexpected supply or transfer restrictions.",
+      details: authDetail || undefined,
+    });
+    score += 12;
+  } else if (mintAuthorityEnabled || freezeAuthorityEnabled) {
+    const parts = [];
+    if (mintAuthorityEnabled) parts.push("mint authority enabled");
+    if (freezeAuthorityEnabled) parts.push("freeze authority enabled");
+
+    checks.push({
+      key: "authorities",
+      title: "Authorities / mint control",
+      status: mintAuthorityEnabled && freezeAuthorityEnabled ? "fail" : "warn",
+      short: parts.join(" + "),
+      whyItMatters: "If authorities are enabled, supply or transfers may be controlled by an admin key.",
+      details: authDetail || undefined,
+    });
+
+    score += mintAuthorityEnabled && freezeAuthorityEnabled ? 28 : 18;
+    drivers.push(`Authorities: ${parts.join(" + ")}`);
+  } else {
+    checks.push({
+      key: "authorities",
+      title: "Authorities / mint control",
+      status: "pass",
+      short: "Mint & freeze authorities disabled",
+      whyItMatters: "Renounced authorities reduce the chance of surprise supply/transfer controls.",
+      details: authDetail || undefined,
+    });
+
+    score += 4;
+    drivers.push("Authorities: renounced (mint/freeze disabled)");
+  }
 
   score = clamp(Math.round(score), 0, 99);
 
-  // Top drivers: cap to 3, fill if needed
+  // Top drivers: cap to 3, fill if needed (use meaningful fallbacks)
   const topDrivers = drivers.slice(0, 3);
-  while (topDrivers.length < 3) topDrivers.push("Data still loading into MVP checks");
+  if (topDrivers.length < 3 && liquidity != null) topDrivers.push(`Liquidity: ~${formatUsd(liquidity)}`);
+  if (topDrivers.length < 3 && top10Pct != null) topDrivers.push(`Holders: top 10 ~${top10Pct.toFixed(0)}%`);
+  while (topDrivers.length < 3) topDrivers.push("Some checks unavailable (MVP) — re-scan later");
 
   return {
     id: makeId(),
@@ -300,10 +405,21 @@ const server = http.createServer(async (req, res) => {
     const u = new URL(req.url || "/", `http://${req.headers.host}`);
 
     if (u.pathname === "/health") {
+      let rpcOk = false;
+      let rpcError = null;
+      try {
+        await solanaRpc("getVersion", []);
+        rpcOk = true;
+      } catch (e) {
+        rpcError = String(e?.message || e);
+      }
+
       return json(res, 200, {
         ok: true,
         hasBirdeye: Boolean(BIRDEYE_API_KEY),
         hasRpc: Boolean(SOLANA_RPC_URL),
+        rpcOk,
+        rpcError,
       });
     }
 
